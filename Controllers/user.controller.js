@@ -135,7 +135,7 @@ exports.updateUser = async (req, res, next) => {
     if (!(id && name && email && password && phone && type)) {
       return res.json("all fields is required");
     } else {
-      const encryptedPassword = await bcrypt.hash(password, 10);
+      const encryptedPassword = await bcrypt.hash(password, +process.env.SALT);
       await userModel.findByIdAndUpdate(id, {
         name: name,
         email: email,
@@ -233,7 +233,7 @@ if(!USER){
 res.json("user not found")
 
 } 
-const hashPassword = await bcrypt.hash(password,10)
+const hashPassword = await bcrypt.hash(password,+process.env.SALT)
  USER.password = hashPassword;
  await USER.save().then(()=>{
   res.json(USER)
