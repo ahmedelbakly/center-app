@@ -1,7 +1,7 @@
 // import userModel
 const userModel = require("../Models/user.model");
 const JWT = require("jsonwebtoken");
-const nodeMiller = require("../helper/nodeMial")
+const nodeMiller = require("../helper/nodeMail")
 require("dotenv").config()
 
 // import funHelper
@@ -10,7 +10,6 @@ const funHelper = require("../helper/functions");
 const bcrypt = require("bcrypt");
 const helper = require("../helper/functions");
 require("dotenv").config();
-console.log(process.env.JWT_SECRET_ACCESS);
 
 // ****************************************************************************************
 
@@ -21,10 +20,9 @@ exports.signupUser = async (req, res, next) => {
     if (!(name && email && password && phone && type)) {
       return res.json("all fields is required");
     } else {
-      console.log(req.body);
       const user = await userModel.findOne({ email: email });
       if (user) {
-        console.log(typeof(+process.env.SALT));
+       
         return res.json("user is registered");
 
       } else {
@@ -38,7 +36,6 @@ exports.signupUser = async (req, res, next) => {
           phone: phone,
           type: type,
         });
-        console.log(newUser);
         await newUser.save();
         res.status(201).json(newUser);
       }
@@ -63,8 +60,7 @@ exports.createRefreshToken = async (req, res, next) => {
     refreshToken,
     process.env.JWT_SECRET_REFRESH,
     async (error, user) => {
-      error && console.log(error);
-      user && console.log(user);
+      
       refreshTokens = [];
       const newAccessToken = await funHelper.generateToken(
         user,
@@ -109,7 +105,7 @@ exports.loginUser = async (req, res, next) => {
             process.env.JWT_SECRET_REFRESH_EXPIRE
           );
           refreshTokens.push(refreshToken);
-          console.log(refreshTokens);
+        
           res.json({
             userToken: `Bearer ${token}`,
             refreshToken: refreshToken,
@@ -154,7 +150,7 @@ exports.updateUser = async (req, res, next) => {
 //create functions to deleteUser
 exports.deleteUser = async (req, res, next) => {
   try {
-    console.log(req.params.id);
+  
     if (!req.params.id) {
       return res.json(" id is required");
     } else {
@@ -169,7 +165,7 @@ exports.deleteUser = async (req, res, next) => {
 // **********************************************************
 //create functions to getAllStudent
 exports.getAllStudent = async (req, res, next) => {
-  console.log(req.param.type);
+
   try {
     const allStudent = await userModel.find({ type: "student" });
     res.status(201).json(allStudent);
@@ -219,7 +215,7 @@ exports.restPass = async (req, res, next) => {
 }
 
 catch (error) {
-    console.log(error);
+  return  res.status(301).send(error)
   }
 };
 
@@ -245,27 +241,3 @@ const hashPassword = await bcrypt.hash(password,+process.env.SALT)
 
 
  }
-
-// exports.createRefreshToken = async (req, res, next) => {
-//   const refreshToken = req.body.token;
-//   if (!refreshToken) res.status(403).json("you not authorization");
-//   if (!refreshTokens.includes(refreshToken)) {
-//     console.log(refreshToken);
-//     console.log(refreshTokens);
-//     return res.status(403).json("refreshToken is not valid");
-//   }
-
-//   return console.log("token valid");
-//   JWT.verify(refreshToken, "myRefreshToken", (error, user) => {
-//     error && console.log(error);
-//     refreshTokens = [];
-//     const newAccessToken = funHelper.generateToken(user, "mySecretToken", "5s");
-//     const newRefreshToken = funHelper.generateToken(user, "myRefreshToken", "1h");
-//     refreshTokens.push(newRefreshToken);
-//     res.json({
-//       accessToken: newAccessToken,
-//       refreshToken: newRefreshToken,
-//       refreshTokens: refreshTokens,
-//     });
-//   });
-// };

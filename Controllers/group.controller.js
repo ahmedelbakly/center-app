@@ -7,8 +7,6 @@ exports.getAllGroups = async (req, res, next) => {
   try {
     const allGroups = await GroupModel.find({});
     if (allGroups) {
-      //  const students =  allGroups.map((g) => g.students);
-      //  const studentsName =  students.map((student) => (student.map(st=>st.studentName)));
       res.status(200).json(allGroups);
     }
   } catch (error) {
@@ -113,13 +111,14 @@ exports.deleteUserFromGroup = async (req, res, next) => {
     const { groupId, studentId } = req.params;
     if (!(groupId && studentId)) {
       return res.json("you must add groupId && studentId");
-    } else {console.log(groupId , studentId);
-     await GroupModel.findByIdAndUpdate(
+    } else {
+    
+      await GroupModel.findByIdAndUpdate(
         { _id: groupId },
-        { $pull: { students: { studentId: studentId } }},{new:true}
-        );
-         res.status(200).json("remove student");
-
+        { $pull: { students: { studentId: studentId } } },
+        { new: true }
+      );
+      res.status(200).json("remove student");
     }
   } catch (error) {
     res.json(error);
