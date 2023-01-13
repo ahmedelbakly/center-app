@@ -1,13 +1,13 @@
 // import userModel
+require("dotenv").config()
+const bcrypt = require("bcrypt");
 const userModel = require("../Models/user.model");
 const JWT = require("jsonwebtoken");
 const nodeMiller = require("../helper/nodeMail")
-require("dotenv").config()
 
 // import funHelper
 const funHelper = require("../helper/functions");
 // import bcrypt
-const bcrypt = require("bcrypt");
 const helper = require("../helper/functions");
 require("dotenv").config();
 
