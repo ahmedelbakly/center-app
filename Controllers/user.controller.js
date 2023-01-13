@@ -1,15 +1,12 @@
 // import userModel
-require("dotenv").config()
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const userModel = require("../Models/user.model");
 const JWT = require("jsonwebtoken");
-const nodeMiller = require("../helper/nodeMail")
-
+const nodeMiller = require("../helper/nodeMail");
 // import funHelper
 const funHelper = require("../helper/functions");
 // import bcrypt
-const helper = require("../helper/functions");
-require("dotenv").config();
 
 // ****************************************************************************************
 
@@ -22,12 +19,12 @@ exports.signupUser = async (req, res, next) => {
     } else {
       const user = await userModel.findOne({ email: email });
       if (user) {
-       
         return res.json("user is registered");
-
       } else {
-      
-        const encryptedPassword = await bcrypt.hash(password,+process.env.SALT);
+        const encryptedPassword = await bcrypt.hash(
+          password,
+          +process.env.SALT
+        );
 
         const newUser = await new userModel({
           name: name,
@@ -60,7 +57,6 @@ exports.createRefreshToken = async (req, res, next) => {
     refreshToken,
     process.env.JWT_SECRET_REFRESH,
     async (error, user) => {
-      
       refreshTokens = [];
       const newAccessToken = await funHelper.generateToken(
         user,
@@ -105,7 +101,7 @@ exports.loginUser = async (req, res, next) => {
             process.env.JWT_SECRET_REFRESH_EXPIRE
           );
           refreshTokens.push(refreshToken);
-        
+
           res.json({
             userToken: `Bearer ${token}`,
             refreshToken: refreshToken,
@@ -150,7 +146,6 @@ exports.updateUser = async (req, res, next) => {
 //create functions to deleteUser
 exports.deleteUser = async (req, res, next) => {
   try {
-  
     if (!req.params.id) {
       return res.json(" id is required");
     } else {
@@ -165,7 +160,6 @@ exports.deleteUser = async (req, res, next) => {
 // **********************************************************
 //create functions to getAllStudent
 exports.getAllStudent = async (req, res, next) => {
-
   try {
     const allStudent = await userModel.find({ type: "student" });
     res.status(201).json(allStudent);
@@ -199,45 +193,38 @@ exports.restPass = async (req, res, next) => {
       process.env.JWT_SECRET_ACCESS_EXPIRE
     );
 
-    const link = `http://localhost:3000/user/restPass/${user.id}/${token}`
-   
-    await nodeMiller.sendMailToUser(email,"rest password",`click on this link to rest your password
+    const link = `http://localhost:3000/user/restPass/${user.id}/${token}`;
+
+    await nodeMiller.sendMailToUser(
+      email,
+      "rest password",
+      `click on this link to rest your password
 
     link : ${link}
     
-    this link is valid to 5 minutes`)
+    this link is valid to 5 minutes`
+    );
 
     res.json({
       token,
       link,
-    id :  user.id
+      id: user.id,
     });
-}
-
-catch (error) {
-  return  res.status(301).send(error)
+  } catch (error) {
+    return res.status(301).send(error);
   }
 };
 
-
-exports.restPassById = async (req,res,next) => { 
-
-const {password} = req.body;
-const {id}= req.params;
-const USER  = await userModel.findOne({_id : id});
-if(!USER){
-res.json("user not found")
-
-} 
-const hashPassword = await bcrypt.hash(password,+process.env.SALT)
- USER.password = hashPassword;
- await USER.save().then(()=>{
-  res.json(USER)
- })
-
-
-
-
-
-
- }
+exports.restPassById = async (req, res, next) => {
+  const { password } = req.body;
+  const { id } = req.params;
+  const USER = await userModel.findOne({ _id: id });
+  if (!USER) {
+    res.json("user not found");
+  }
+  const hashPassword = await bcrypt.hash(password, +process.env.SALT);
+  USER.password = hashPassword;
+  await USER.save().then(() => {
+    res.json(USER);
+  });
+};
