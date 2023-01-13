@@ -1,6 +1,6 @@
 // import userModel
 require("dotenv").config();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const userModel = require("../Models/user.model");
 const JWT = require("jsonwebtoken");
 const nodeMiller = require("../helper/nodeMail");
