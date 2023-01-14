@@ -12,18 +12,18 @@ var transporter = nodemailer.createTransport({
 
 exports.sendMailToUser = async (email,subject,text) => {
   try {
-    var mailOptions = {
+    var mailOptions = await {
       from: process.env.EMAIL,
       to: email,
       subject:subject ,
       text: text,
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, function async (error, info) {
       if (error) {
         console.log(error);
       } else {
-        console.log("Email sent: " + info.response);
+       console.log("Email sent: " + info.response);
       }
     });
   } catch (error) {

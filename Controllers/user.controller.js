@@ -205,7 +205,7 @@ exports.restPass = async (req, res, next) => {
     this link is valid to 5 minutes`
     );
 
-    res.json({
+    await res.json({
       token,
       link,
       id: user.id,
