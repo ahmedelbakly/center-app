@@ -195,7 +195,7 @@ exports.restPass = async (req, res, next) => {
 
     const link = `http://localhost:3000/user/restPass/${user.id}/${token}`;
 
-    await nodeMiller.sendMailToUser(
+    await nodeMiller.sendMailToUser(req,res,
       email,
       "rest password",
       `click on this link to rest your password
