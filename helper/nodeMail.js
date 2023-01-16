@@ -2,7 +2,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-exports.sendMailToUser = async (req,res,email,subject,text) => {
+exports.sendMailToUser = async (email,subject,text) => {
 
   var transporter = nodemailer.createTransport({
     port: 465,
@@ -36,27 +36,29 @@ exports.sendMailToUser = async (req,res,email,subject,text) => {
       text: text,
     };
 
-    transporter.sendMail(mailOptions, function async (error, info) {
-      if (error) {
+    // transporter.sendMail(mailOptions, function async (error, info) {
+    //   if (error) {
         
-      } else {
-       console.log("Email sent: " + info.response);
-      }
-    });
+    //   } else {
+    //    console.log("Email sent: " + info.response);
+    //   }
+    // });
+
+    await new Promise((resolve, reject) => {
+      // send mail
+      transporter.sendMail(mailOptions, (err, info) => {
+          if (err) {
+              console.error(err);
+              reject(err);
+          } else {
+              console.log(info);
+              resolve(info);
+          }
+      });
+  });
   } catch (error) {
     console.log(error);
   }
-  await new Promise((resolve, reject) => {
-    // send mail
-    transporter.sendMail(mailData, (err, info) => {
-        if (err) {
-            console.error(err);
-            reject(err);
-        } else {
-            console.log(info);
-            resolve(info);
-        }
-    });
-});
-res.status(200).json({ status: "OK" });
+ 
+
 };
