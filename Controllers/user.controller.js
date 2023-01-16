@@ -186,7 +186,7 @@ exports.restPass = async (req, res, next) => {
     const user = await userModel.findOne({ email });
     if (!user) {
       res.status(400).json("user is not register");
-    }
+    }else{
     const token = await funHelper.generateToken(
       user,
       process.env.JWT_SECRET_ACCESS,
@@ -210,7 +210,7 @@ exports.restPass = async (req, res, next) => {
       link,
       id: user.id,
     });
-  } catch (error) {
+  }} catch (error) {
     return res.status(301).send(error);
   }
 };
