@@ -32,8 +32,17 @@ exports.signupUser = async (req, res, next) => {
           password: encryptedPassword,
           phone: phone,
           type: type,
+          active:false,
         });
         await newUser.save();
+        const activeToken = await funHelper.generateToken(
+          newUser,
+          process.env.JWT_SECRET_VERIFICATION,
+          process.env.JWT_SECRET_VERIFICATION_EXPIRE
+        );
+// const link = ` http://localhost:5000/api/user/active/${activeToken}`   
+const link = ` https://center-app.vercel.app//api/user/active/${activeToken}`   
+  nodeMiller.sendMailToUser(email,"activation Email", link )
         res.status(201).json(newUser);
       }
     }
@@ -89,6 +98,11 @@ exports.loginUser = async (req, res, next) => {
       const user = await userModel.findOne({ email: email });
 
       if (user) {
+if (!user.active) {
+   return res.json("your account not active, please check your email to active your account")
+  
+}
+
         if (await bcrypt.compare(password, user.password)) {
           const token = await funHelper.generateToken(
             user,
@@ -228,3 +242,24 @@ exports.restPassById = async (req, res, next) => {
     res.json(USER);
   });
 };
+
+
+exports.activeUser = async(req,res,next) => {
+  const{token}=req.params;
+ 
+  try {
+    const _id =  await JWT.verify(token,process.env.JWT_SECRET_VERIFICATION).id;
+  if(!token){
+    return req.json("token not found or not valid")
+  }else{
+    const signUser = await userModel.findByIdAndUpdate(_id,{active:true})
+   
+    await res.json(signUser)
+  }
+  } catch (error) {
+    
+  }
+  
+  
+  
+}

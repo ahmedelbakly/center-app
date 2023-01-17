@@ -15,7 +15,10 @@ router.get("/user/allTeacher", auth, userController.getAllTeacher);
 router.post("/user/refreshToken", userController.createRefreshToken);
 router.post("/user/restPass", userController.restPass);
 router.put("/user/restPass/:id", auth, userController.restPassById);
+router.get("/user/active/:token",userController.activeUser);
 
 /////////////////////////////////////////////////////////////////////////////
 
 module.exports = router;
+
+//

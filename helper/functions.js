@@ -36,3 +36,21 @@ exports.verifyToken = async (req, res, next) => {
     res.status(403).json("user not authorization");
   }
 };
+exports.verifyTokenActive = async (req, res, next) => {
+  const {authHeader} = req.params;
+  if (authHeader) {
+    // const token = authHeader.split(" ")[1];
+    const token = authHeader;
+    console.log("token is :" + token);
+   const variation = await  JWT.verify(token, "MySEcretToken", (error, user) => {
+      if (error) {
+        res.status(404).json("token not valid");
+      }
+      req.user = user;
+      console.log(req.user);
+      next();
+    });
+  } else {
+    res.status(403).json("user not authorization");
+  }
+};

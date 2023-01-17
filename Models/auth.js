@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 const { model } = require("mongoose");
-const funHelper =  require("../helper/functions")
+// const funHelper =  require("../helper/functions")
 
 const auth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
