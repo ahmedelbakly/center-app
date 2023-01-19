@@ -9,6 +9,7 @@ const UserSchema = new Schema({
   type: String,
   active: Boolean,
   date: { type: Date, default: Date.now },
+  subject:{ type: String },
 });
 
 const User = mongoose.model("User", UserSchema);

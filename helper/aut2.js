@@ -3,7 +3,7 @@ exports.authReq = async (req, res, next) => {
   const shafrat = process.env.SHFARAT.split(" ");
 
   const save = await req.headers.save;
-  
+
   try {
     if (!save) {
       return res.json("communicate with backend developer");

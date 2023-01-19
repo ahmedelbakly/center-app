@@ -6,7 +6,10 @@ const groupSchema = new Schema({
   teacherName: String,
   name: String,
   count: Number,
-  students :[]
+  students :[],
+  date: { type: Date, default: Date.now },
+  subject:{ type: String },
+
 });
 
 const Group = mongoose.model("Group", groupSchema);

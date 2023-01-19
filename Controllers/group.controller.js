@@ -7,10 +7,10 @@ exports.getAllGroups = async (req, res, next) => {
   try {
     const allGroups = await GroupModel.find({});
     if (allGroups) {
-      res.status(200).json(allGroups);
+      return res.status(200).json(allGroups);
     }
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -34,7 +34,7 @@ exports.addNewGroup = async (req, res, next) => {
       return res.status(201).json(newGroup);
     }
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -53,10 +53,10 @@ exports.updateGroup = async (req, res, next) => {
         name: name,
         count: count,
       });
-      res.json("update group");
+      return res.json("update group");
     }
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -69,10 +69,10 @@ exports.deleteGroup = async (req, res, next) => {
       return res.json("id is required");
     } else {
       await GroupModel.findByIdAndDelete(req.params.id);
-      res.json("deleteGroup");
+      return res.json("deleteGroup");
     }
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -100,7 +100,7 @@ exports.addNewStudentInGroup = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -112,15 +112,14 @@ exports.deleteUserFromGroup = async (req, res, next) => {
     if (!(groupId && studentId)) {
       return res.json("you must add groupId && studentId");
     } else {
-    
       await GroupModel.findByIdAndUpdate(
         { _id: groupId },
         { $pull: { students: { studentId: studentId } } },
         { new: true }
       );
-      res.status(200).json("remove student");
+      return res.status(200).json("remove student");
     }
   } catch (error) {
-    res.json(error);
+    return res.json(error);
   }
 };

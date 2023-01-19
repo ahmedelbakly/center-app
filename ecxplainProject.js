@@ -1,7 +1,6 @@
-
 // explain project
 
-//  1- user api 
+//  1- user api
 
 ///******signup user
 
@@ -13,7 +12,6 @@
 
 this route save user in database
 */
-
 
 ////******login user
 //http://localhost:5000/api/user/login
@@ -42,7 +40,6 @@ this route return  access token and user in formation
 delete user from  database by id
 */
 
- 
 ////******get all student
 //http://localhost:5000/api/user/allStudent
 
@@ -50,13 +47,12 @@ delete user from  database by id
 get all student in database
 */
 
- 
 ////****** all teachers
 //hhttp://localhost:5000/api/user/allTeacher
 /*
 get all teachers in database.
 */
- 
+
 ////****** refresh token
 //http://localhost:5000/api/user/refreshToken
 /*
@@ -77,9 +73,7 @@ update user password in database
 link= `http://localhost:3000/user/restPass/${user.id}/${token}`
 */
 
-
 //************************************ */  1- group api *********************************
-
 
 ////******all group
 //http://localhost:5000/api/group/getAll
@@ -87,7 +81,6 @@ link= `http://localhost:3000/user/restPass/${user.id}/${token}`
 get all group in database
 */
 
- 
 ////****** add new group
 //http://localhost:5000/api/group/addNewGroup
 /*
@@ -98,13 +91,13 @@ get all group in database
   "count": 20
 }
 */
- 
+
 ////****** update group
 //http://localhost:5000/api/group/updateGroup
 /*
 send data that you are update
 */
- 
+
 ////****** delete group
 //http://localhost:5000/api/group/deleteGroup/:id
 /*
@@ -129,8 +122,7 @@ delete group from teacher
 }
 */
 
- 
-// user api 
+// user api
 
 /*
 router.post("/user/signupUser", userController.signupUser);
@@ -144,8 +136,8 @@ router.post("/user/restPass", userController.restPass);
 router.put("/user/restPass/:id",auth, userController.restPassById);
 
 */
- 
-// user api 
+
+// user api
 
 /*
 

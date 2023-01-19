@@ -13,17 +13,15 @@ const funHelper = require("../helper/functions");
 //create functions to signupUser
 exports.signupUser = async (req, res, next) => {
   try {
+    const { name, email, password, phone, type, subject } = req.body;
 
-    const { name, email, password, phone, type} = req.body;
-    
-    if (!(name && email && password && phone && type)) {
+    if (!(name && email && password && phone && type && subject)) {
       return res.json("all fields is required");
     } else {
       const user = await userModel.findOne({ email: email });
       if (user) {
         return res.json("user is registered");
       } else {
-        
         const encryptedPassword = await bcrypt.hash(
           password,
           +process.env.SALT
@@ -35,7 +33,8 @@ exports.signupUser = async (req, res, next) => {
           password: encryptedPassword,
           phone: phone,
           type: type,
-          active:false,
+          active: false,
+          subject: subject,
         });
         await newUser.save();
         const activeToken = await funHelper.generateToken(
@@ -43,9 +42,9 @@ exports.signupUser = async (req, res, next) => {
           process.env.JWT_SECRET_VERIFICATION,
           process.env.JWT_SECRET_VERIFICATION_EXPIRE
         );
-// const link = ` http://localhost:5000/api/user/active/${activeToken}`   
-const link = ` https://center-app.vercel.app//api/user/active/${activeToken}`   
-  nodeMiller.sendMailToUser(email,"activation Email", link )
+        // const link = ` http://localhost:5000/api/user/active/${activeToken}`
+        const link = ` https://center-app.vercel.app//api/user/active/${activeToken}`;
+        nodeMiller.sendMailToUser(email, "activation Email", link);
         res.status(201).json(newUser);
       }
     }
@@ -101,10 +100,11 @@ exports.loginUser = async (req, res, next) => {
       const user = await userModel.findOne({ email: email });
 
       if (user) {
-if (!user.active) {
-   return res.json("your account not active, please check your email to active your account")
-  
-}
+        if (!user.active) {
+          return res.json(
+            "your account not active, please check your email to active your account"
+          );
+        }
 
         if (await bcrypt.compare(password, user.password)) {
           const token = await funHelper.generateToken(
@@ -119,17 +119,17 @@ if (!user.active) {
           );
           refreshTokens.push(refreshToken);
 
-          res.json({
+          return res.json({
             userToken: `Bearer ${token}`,
             refreshToken: refreshToken,
             user: user,
             refreshTokens,
           });
         } else {
-          res.json("password is incorrect");
+          return res.json("password is incorrect");
         }
       } else {
-        res.json("this email is not registered");
+        return res.json("this email is not registered");
       }
     }
   } catch (error) {
@@ -152,10 +152,10 @@ exports.updateUser = async (req, res, next) => {
         phone: phone,
         type: type,
       });
-      res.json("update user");
+      return res.json("update user");
     }
   } catch (error) {
-    // res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -179,7 +179,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getAllStudent = async (req, res, next) => {
   try {
     const allStudent = await userModel.find({ type: "student" });
-    res.status(201).json(allStudent);
+    return res.status(201).json(allStudent);
   } catch (error) {
     res.status(301).json(error);
   }
@@ -189,9 +189,9 @@ exports.getAllStudent = async (req, res, next) => {
 exports.getAllTeacher = async (req, res, next) => {
   try {
     const allTeachers = await userModel.find({ type: "teacher" });
-    res.status(201).json(allTeachers);
+    return res.status(201).json(allTeachers);
   } catch (error) {
-    res.status(301).json(error);
+    return res.status(301).json(error);
   }
 };
 
@@ -200,34 +200,38 @@ exports.getAllTeacher = async (req, res, next) => {
 exports.restPass = async (req, res, next) => {
   const { email } = req.body;
   try {
+    if (!email) {
+      return res.status(404).json("you must insert your email");
+    }
     const user = await userModel.findOne({ email });
     if (!user) {
-      res.status(400).json("user is not register");
-    }else{
-    const token = await funHelper.generateToken(
-      user,
-      process.env.JWT_SECRET_ACCESS,
-      process.env.JWT_SECRET_ACCESS_EXPIRE
-    );
+      return res.status(400).json("user is not register");
+    } else {
+      const token = await funHelper.generateToken(
+        user,
+        process.env.JWT_SECRET_ACCESS,
+        process.env.JWT_SECRET_ACCESS_EXPIRE
+      );
 
-    const link = `http://localhost:3000/user/restPass/${user.id}/${token}`;
+      const link = `http://localhost:3000/user/restPass/${user.id}/${token}`;
 
-    await nodeMiller.sendMailToUser(
-      email,
-      "rest password",
-      `click on this link to rest your password
+      await nodeMiller.sendMailToUser(
+        email,
+        "rest password",
+        `click on this link to rest your password
 
     link : ${link}
     
     this link is valid to 5 minutes`
-    );
+      );
 
-    await res.json({
-      token,
-      link,
-      id: user.id,
-    });
-  }} catch (error) {
+      return res.json({
+        token,
+        link,
+        id: user.id,
+      });
+    }
+  } catch (error) {
     return res.status(301).send(error);
   }
 };
@@ -236,43 +240,35 @@ exports.restPassById = async (req, res, next) => {
   try {
     const { password } = req.body;
     if (!password) {
-     return res.status(400).json("all fields is required")
+      return res.status(400).json("all fields is required");
     }
     const { id } = req.params;
     const USER = await userModel.findOne({ _id: id });
     if (!USER) {
-          return res.json("user not found");
-    }else{
+      return res.json("user not found");
+    } else {
       const hashPassword = await bcrypt.hash(password, +process.env.SALT);
       USER.password = hashPassword;
       await USER.save().then(() => {
         return res.json(USER);
       });
     }
-   
   } catch (error) {
     console.log(error);
   }
- 
 };
 
+exports.activeUser = async (req, res, next) => {
+  const { token } = req.params;
 
-exports.activeUser = async(req,res,next) => {
-  const{token}=req.params;
- 
   try {
-    const _id =  await JWT.verify(token,process.env.JWT_SECRET_VERIFICATION).id;
-  if(!token){
-    return req.json("token not found or not valid")
-  }else{
-    const signUser = await userModel.findByIdAndUpdate(_id,{active:true})
-   
-    await res.json(signUser)
-  }
-  } catch (error) {
-    
-  }
-  
-  
-  
-}
+    const _id = await JWT.verify(token, process.env.JWT_SECRET_VERIFICATION).id;
+    if (!token) {
+      return req.json("token not found or not valid");
+    } else {
+      const signUser = await userModel.findByIdAndUpdate(_id, { active: true });
+
+      return await res.json(signUser);
+    }
+  } catch (error) {}
+};
