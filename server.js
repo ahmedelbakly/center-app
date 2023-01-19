@@ -35,7 +35,8 @@ app.use(
       "methods": "GET,PUT,POST,DELETE",
       "preflightContinue": false,
       "optionsSuccessStatus": 204,
-     "allowedHeaders":"Authorization"
+     "allowedHeaders":"Authorization,Save"
+    
   })
 );
 
