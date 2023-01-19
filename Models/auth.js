@@ -8,15 +8,15 @@ const auth = async (req, res, next) => {
   try {
 
     if (!authHeader){
-      res.send("user not authorize")
+     return  res.send("user not authorize")
       }else{
         const token = authHeader.split(" ")[1];
     if (!token) {
-      res.json("no token");
+    return  res.json("no token");
     } else {
       const Verify = await JWT.verify(token, "MySEcretToken", (error, user) => {
         if (error) {
-          res.json("token no valid");
+        return  res.json("token no valid");
         }
         req.user = user;
     

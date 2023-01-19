@@ -1,5 +1,5 @@
-// import userModel
 require("dotenv").config();
+// import userModel
 const bcrypt = require("bcryptjs");
 const userModel = require("../Models/user.model");
 const JWT = require("jsonwebtoken");
@@ -13,7 +13,9 @@ const funHelper = require("../helper/functions");
 //create functions to signupUser
 exports.signupUser = async (req, res, next) => {
   try {
-    const { name, email, password, phone, type } = req.body;
+
+    const { name, email, password, phone, type} = req.body;
+    
     if (!(name && email && password && phone && type)) {
       return res.json("all fields is required");
     } else {
@@ -21,6 +23,7 @@ exports.signupUser = async (req, res, next) => {
       if (user) {
         return res.json("user is registered");
       } else {
+        
         const encryptedPassword = await bcrypt.hash(
           password,
           +process.env.SALT
@@ -230,17 +233,27 @@ exports.restPass = async (req, res, next) => {
 };
 
 exports.restPassById = async (req, res, next) => {
-  const { password } = req.body;
-  const { id } = req.params;
-  const USER = await userModel.findOne({ _id: id });
-  if (!USER) {
-    res.json("user not found");
+  try {
+    const { password } = req.body;
+    if (!password) {
+     return res.status(400).json("all fields is required")
+    }
+    const { id } = req.params;
+    const USER = await userModel.findOne({ _id: id });
+    if (!USER) {
+          return res.json("user not found");
+    }else{
+      const hashPassword = await bcrypt.hash(password, +process.env.SALT);
+      USER.password = hashPassword;
+      await USER.save().then(() => {
+        return res.json(USER);
+      });
+    }
+   
+  } catch (error) {
+    console.log(error);
   }
-  const hashPassword = await bcrypt.hash(password, +process.env.SALT);
-  USER.password = hashPassword;
-  await USER.save().then(() => {
-    res.json(USER);
-  });
+ 
 };
 
 
