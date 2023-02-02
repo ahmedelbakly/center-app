@@ -30,7 +30,7 @@ router.put(
   auth,
   userController.restPassById
 );
-router.get("/user/active/:token", auth2.authReq, userController.activeUser);
+router.get("/user/active/:token",userController.activeUser);
 
 /////////////////////////////////////////////////////////////////////////////
 
