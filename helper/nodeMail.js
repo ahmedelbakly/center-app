@@ -4,18 +4,19 @@ require("dotenv").config();
 
 exports.sendMailToUser = async (email,subject,text) => {
 
-  var transporter = nodemailer.createTransport({
-    port: 465,
-    host: "smtp.gmail.com",
-   
-    auth: {
-      user: process.env.EMAIL,
-      pass:process.env.EMAIL_PASS2,
-    },
-    secure:true
-  });
-
+  
   await new Promise((resolve, reject) => {
+    var transporter = nodemailer.createTransport({
+      port: 465,
+      host: "smtp.gmail.com",
+     
+      auth: {
+        user: process.env.EMAIL,
+        pass:process.env.EMAIL_PASS2,
+      },
+      secure:true
+    });
+  
     // verify connection configuration
     transporter.verify(function (error, success) {
         if (error) {
@@ -35,14 +36,6 @@ exports.sendMailToUser = async (email,subject,text) => {
       subject:subject ,
       text: text,
     };
-
-    // transporter.sendMail(mailOptions, function async (error, info) {
-    //   if (error) {
-        
-    //   } else {
-    //    console.log("Email sent: " + info.response);
-    //   }
-    // });
 
     await new Promise((resolve, reject) => {
       // send mail
