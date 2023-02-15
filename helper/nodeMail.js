@@ -1,7 +1,8 @@
 
 require("dotenv").config();
 const nodemailer = require("nodemailer");
-const nodemailerSendGridTransport = require("nodemailer-sendgrid-transport")
+const nodemailerSendGridTransport = require("nodemailer-sendgrid-transport");
+const { promises } = require("nodemailer/lib/xoauth2");
 
 // exports.sendMailToUser = async (email,subject,text) => {
 
@@ -59,26 +60,88 @@ const nodemailerSendGridTransport = require("nodemailer-sendgrid-transport")
 
 
 exports.sendMailToUser = async (email,subject,text) => {
+await new Promise ((resolve,reject)=>{
+  try {
+    
+    const transporter = nodemailer.createTransport(nodemailerSendGridTransport({
+      auth:{
+        api_key :process.env.SENDGRID_API_KEY
+      }
+    }))
+    const mailOptions =  {
+            from: process.env.EMAIL,
+            to: email,
+            subject:subject ,
+            html : `<h1>active your account</h1> <p>link: ${text}</p>`
+          }
+    
+          transporter.sendMail(mailOptions,(error, info)=>{
+      if(error){
+        console.log(error);
+  
+      }else {
+        console.log(`mail is sent to ${email}`);
+      }
+    })
 
-  const transporter = nodemailer.createTransport(nodemailerSendGridTransport({
-    auth:{
-      api_key :process.env.SENDGRID_API_KEY
-    }
-  }))
-  const mailOptions = await {
-          from: process.env.EMAIL,
-          to: email,
-          subject:subject ,
-          html : `<h1>active your account</h1>
-           <p>link: ${text}</p>`}
-  transporter.sendMail(mailOptions,(error, info)=>{
-    if(error){
-      console.log(error);
 
-    }else {
-      console.log(`mail is sent to ${email}`);
-    }
-  })
+  } catch (error) {
+    
+  }
+})
+ 
  
 
 };
+
+
+// exports.sendMailToUser = async (email,subject,text) => {
+
+  
+//   await new Promise((resolve, reject) => {
+//     var transporter = nodemailer.createTransport(nodemailerSendGridTransport({
+//       auth:{
+//            api_key :process.env.SENDGRID_API_KEY
+//            }
+//     })
+//      );
+  
+//     // verify connection configuration
+//     transporter.verify(function (error, success) {
+//         if (error) {
+//             console.log(error);
+//             reject(error);
+//         } else {
+//             console.log("Server is ready to take our messages");
+//             resolve(success);
+//         }
+//     });
+// });
+  
+//   try {
+//     const mailOptions = await {
+//           from: process.env.EMAIL,
+//           to: email,
+//           subject:subject ,
+//           html : `<h1>active your account</h1>
+//            <p>link: ${text}</p>`
+//           };
+
+//     await new Promise((resolve, reject) => {
+//       // send mail
+//       transporter.sendMail(mailOptions, (err, info) => {
+//           if (err) {
+//               console.error(err);
+//               reject(err);
+//           } else {
+//               console.log(info);
+//               resolve(info);
+//           }
+//       });
+//   });
+//   } catch (error) {
+//     console.log(error);
+//   }
+ 
+
+// };
