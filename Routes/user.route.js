@@ -34,7 +34,7 @@ router.get("/user/active/:token",userController.activeUser);
 
 /////////////////////////////////////////////////////////////////////////////
 
-// router.get("/user/sendGrid",userController.sendGrid);
+router.get("/user/sendGrid",userController.sendGrid);
 
 module.exports = router;
 

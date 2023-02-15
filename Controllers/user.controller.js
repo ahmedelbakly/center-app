@@ -44,7 +44,7 @@ exports.signupUser = async (req, res, next) => {
         );
         // const link = ` http://localhost:5000/api/user/active/${activeToken}`
         const link = ` https://center-app.vercel.app//api/user/active/${activeToken}`;
-        nodeMiller.sendMailToUser(email, "activation Email", link);
+        sendGrid.SendEmail(email, "activation Email", link);
         res.status(201).json(newUser);
       }
     }
@@ -274,3 +274,7 @@ exports.activeUser = async (req, res, next) => {
 };
 
 
+exports.sendGrid = async(req,res,next)=>{
+ await sendGrid.SendEmail("ahmedelbakly258@gmail.com")
+res.json("mail is sent")
+}
