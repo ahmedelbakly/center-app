@@ -7,7 +7,7 @@ const nodeMiller = require("../helper/nodeMail");
 // import funHelper
 const funHelper = require("../helper/functions");
 // import bcrypt
-
+const sendGrid = require("../helper/SendGrid")
 // ****************************************************************************************
 
 //create functions to signupUser
@@ -272,3 +272,5 @@ exports.activeUser = async (req, res, next) => {
     }
   } catch (error) {}
 };
+
+
