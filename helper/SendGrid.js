@@ -17,14 +17,13 @@ exports.SendEmail = async (email,subject,link) => {
       
         html:`<h1>Center App</h1> <p><b>activation link</b>:${link}</p>`,
       };
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log("Email sent from sendGrid");
+      const sended = sgMail.send(msg);
+       sended.then(() => {
+          console.log("Email sent from sendGrid",sended);
           resolve("Email sent from sendGrid");
         })
         .catch((error) => {
-          console.error(error);
+          console.error(error,sended);
           reject(error)
         });
 
