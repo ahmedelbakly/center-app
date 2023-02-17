@@ -12,7 +12,7 @@ const sendGrid = require("../helper/SendGrid")
 
 //create functions to signupUser
 exports.signupUser = async (req, res, next) => {
-  return new promise ((resolve,reject)=>{
+ 
 
 
   try {
@@ -54,7 +54,7 @@ exports.signupUser = async (req, res, next) => {
   } catch (error) {
     res.status(301).json(error);
   }
-}) };
+ };
 
 // ****************************************************************************************
 let refreshTokens = [];
