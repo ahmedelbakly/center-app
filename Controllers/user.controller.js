@@ -47,8 +47,11 @@ exports.signupUser = async (req, res, next) => {
         );
         // const link = ` http://localhost:5000/api/user/active/${activeToken}`
         const link = ` https://center-app.vercel.app//api/user/active/${activeToken}`;
-         nodeMiller.sendMailToUser(email, "activation Email", link);
-          res.status(201).json(newUser)
+        
+         const response = await res.status(201).json(newUser)
+         response.then(()=>{
+          nodeMiller.sendMailToUser(email, "activation Email", link);
+         })
       }
     }
   } catch (error) {
